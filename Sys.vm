@@ -46,7 +46,7 @@ label while
 push local 1
 push argument 1
 eq
-if-goto END
+if-goto endq2
 
 push constant 1
 push local 1
@@ -59,7 +59,7 @@ add
 pop local 0
 goto while
 
-label END
+label endq2
 push local 0
 return
 
@@ -94,11 +94,11 @@ pop local 0
 push constant 0
 pop local 1
 
-label LOOP
+label loopq3
 push local 1
 push constant 14
 eq
-if-goto END
+if-goto endq3
 
 push constant 1
 push local 1
@@ -115,16 +115,15 @@ push argument 2
 and
 push constant 0
 eq
-if-goto LOOP
+if-goto loopq3
 
 push local 0
 push constant 1
 call Sys.xor 2
 pop local 0
+goto loopq3
 
-goto LOOP
-
-label END
+label endq3
 push local 0
 return
 
@@ -155,15 +154,9 @@ push argument 0
 call Sys.computeParity 3
 push constant 1
 eq
-if-goto odd
+if-goto q4even
 
-push constant 32767
-push argument 0
-and
-return
-goto END
-
-label odd
+label oddoddnumber
 push constant 32767
 push constant 1
 add
@@ -171,7 +164,12 @@ push argument 0
 or
 return
 
-label END
+label q4even
+push constant 32767
+push argument 0
+and
+return
+
 
 
 
