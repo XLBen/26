@@ -156,7 +156,6 @@ push constant 1
 eq
 if-goto q4even
 
-label oddoddnumber
 push constant 32767
 push constant 1
 add
