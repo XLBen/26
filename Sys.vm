@@ -164,12 +164,15 @@ push argument 0
 or
 return
 
+goto q4end
+
 label q4even
 push constant 32767
 push argument 0
 and
 return
 
+label q4end
 
 
 
