@@ -46,7 +46,7 @@ label while
 push local 1
 push argument 1
 eq
-if-goto endq2
+if-goto END
 
 push constant 1
 push local 1
@@ -59,7 +59,7 @@ add
 pop local 0
 goto while
 
-label endq2
+label END
 push local 0
 return
 
@@ -94,11 +94,11 @@ pop local 0
 push constant 0
 pop local 1
 
-label loopq3
+label LOOP
 push local 1
 push constant 14
 eq
-if-goto endq3
+if-goto END
 
 push constant 1
 push local 1
@@ -115,15 +115,16 @@ push argument 2
 and
 push constant 0
 eq
-if-goto loopq3
+if-goto LOOP
 
 push local 0
 push constant 1
 call Sys.xor 2
 pop local 0
-goto loopq3
 
-label endq3
+goto LOOP
+
+label END
 push local 0
 return
 
@@ -171,7 +172,6 @@ or
 return
 
 label END
-
 
 
 
