@@ -1,0 +1,193 @@
+//// COMPUTE THE BITWISE EXCLUSIVE OR.
+// This function takes two arguments and pushes the exclusive
+// OR of its bits onto the stack. This function implements the
+// formula:
+//    x XOR y = (x AND (NOT y)) OR ((NOT x) and y)
+// To call this function, you should:
+//   1. push the two arguments onto the stack; and
+//   2. call this function with `call Sys.xor 2`.
+// Before returning, the function pushes the result onto the
+// stack, so that, from the point of view of the callee, the
+// result is at the top of the stack.
+//
+function Sys.xor 2
+push argument 0
+push argument 1
+or
+pop local 0
+push argument 0
+push argument 1
+and
+not
+pop local 1
+push local 1
+push local 0
+and
+return
+
+
+
+//// SHIFT A VALUE LEFT BY REPEATED ADDITION.
+// This function takes two arguments and pushes the first argument
+// shifted left by as many position as indicated by the second
+// argument. To call this function, you should:
+//   1. push the two arguments (number to be shifted and number of
+//      shift positions) onto the stack; and
+//   2. call this function with `call Sys.shiftLeft 2`.
+// Before returning, the function pushes the result onto the
+// stack, so that, from the point of view of the callee, the
+// result is at the top of the stack.
+//
+function Sys.shiftLeft 2
+push argument 0
+pop local 0
+
+label while
+push local 1
+push argument 1
+eq
+if-goto END
+
+push constant 1
+push local 1
+add
+pop local 1
+
+push local 0
+push local 0
+add
+pop local 0
+goto while
+
+label END
+push local 0
+return
+
+
+
+//// COMPUTE THE PARITY OF THE BOTTOM 15 BITS OF AN INTEGER.
+// This function takes one arguments and pushes the parity of
+// the fifteen right-most bits onto the stack. The possible output
+// values are 1, if the number of 1s in the right-most fifteen
+// bits is odd, or 0, if the number of 1s in the right-most
+// fifteen bits is even. Here is some example output:
+//
+//     INPUT (binary)  | OUT |         NOTES
+//    -----------------+-----+-----------------------
+//    1000000000000000 |  0  | Left-most bit ignored.
+//    0000000000000001 |  1  |
+//    1000000000000001 |  1  | Left-most bit ignored.
+//    0111111111011111 |  0  |
+//    0111111111111111 |  1  |
+//    1111111111111111 |  1  | Left-most bit ignored.
+//
+// To call this function, you should:
+//   1. push the argument onto the stack; and
+//   2. call this function with `call Sys.computeParity 1`.
+// Before returning, the function pushes the result onto the
+// stack, so that, from the point of view of the callee, the
+// result is at the top of the stack.
+//
+function Sys.computeParity 3
+push constant 0
+pop local 0
+push constant 0
+pop local 1
+
+label LOOP
+push local 1
+push constant 14
+eq
+if-goto END
+
+push constant 1
+push local 1
+call Sys.shiftLeft 2
+pop local 2
+
+push constant 1
+push local 1
+add
+pop local 1
+
+push local 2
+push argument 2
+and
+push constant 0
+eq
+if-goto LOOP
+
+push local 0
+push constant 1
+call Sys.xor 2
+pop local 0
+
+goto LOOP
+
+label END
+push local 0
+return
+
+
+//// SET LEFT-MOST BIT TO PARITY BIT.
+// This function takes one 16-bit string and pushes onto the stack
+// the same bit string with the left-most bit set to the parity
+// bit of the 15 right-most bits. Here is some example output:
+//
+//     INPUT (binary)  | OUTPUT (binary)  |         NOTES
+//    -----------------+------------------+-----------------------
+//    1000000000000000 | 0000000000000000 | Left-most bit ignored.
+//    0000000000000001 | 1000000000000001 |
+//    1000000000000001 | 1000000000000001 | Left-most bit ignored.
+//    0111111111011111 | 0111111111011111 |
+//    0111111111111111 | 1111111111111111 |
+//    1111111111111111 | 1111111111111111 | Left-most bit ignored.
+//
+// To call this function, you should:
+//   1. push the the argument onto the stack; and
+//   2. call this function with `call Sys.encode 1`.
+// Before returning, the function pushes the result onto the
+// stack, so that, from the point of view of the callee, the
+// result is at the top of the stack.
+//
+function Sys.encode 1
+push argument 0
+call Sys.computeParity 3
+push constant 1
+eq
+if-goto odd
+
+push constant 32767
+push argument 0
+and
+return
+goto END
+
+label odd
+push constant 32767
+push constant 1
+add
+push argument 0
+or
+return
+
+label END
+
+
+
+// The emulator will start executing from here. You can modify
+// the code below while testing and debugging your code, but
+// please revert your changes before submitting to Gradescope;
+// otherwise, your submission will most likely fail all tests.
+//
+// A better way to test your code is to use the supplied file
+//   Sys.tst
+// with the virtual machine emulator. Please do not submit this
+// file to Gradescope, as this will cause your submission to be
+// rejected.
+//
+function Sys.init 0
+    call Sys.encode 1
+
+label WHILE
+    goto WHILE
